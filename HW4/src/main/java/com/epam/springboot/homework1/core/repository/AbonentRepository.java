@@ -1,7 +1,7 @@
-package com.epam.springboot.homework1.core.service.repository;
+package com.epam.springboot.homework1.core.repository;
 
-import com.epam.springboot.homework1.core.service.model.Abonent;
-import com.epam.springboot.homework1.core.service.model.Service;
+import com.epam.springboot.homework1.core.model.Abonent;
+import com.epam.springboot.homework1.core.model.Service;
 
 import java.util.List;
 
@@ -20,4 +20,6 @@ public interface AbonentRepository {
     List<Service> getServiceList(String email);
 
     List<Abonent> getAbonentList();
+
+    Abonent deleteService(String email, int id);
 }

@@ -141,7 +141,24 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/abonent/email/service",
+					"raw": "localhost:8080l/service",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"service"
+					]
+				}
+			}
+		},
+		{
+			"name": "SUBSCRIBE ABONENT TO SERVICE",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/abonent/email/service/1",
 					"host": [
 						"localhost"
 					],
@@ -149,14 +166,15 @@
 					"path": [
 						"abonent",
 						"email",
-						"service"
+						"service",
+						"1"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "REMOVE SERVICE FROM ABONENT'S LIST",
+			"name": "UNSUBSCRIBE ABONENT FROM SERVICE",
 			"request": {
 				"method": "DELETE",
 				"header": [],

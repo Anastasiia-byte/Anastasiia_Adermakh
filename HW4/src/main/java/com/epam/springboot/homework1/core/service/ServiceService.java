@@ -13,11 +13,10 @@ public interface ServiceService {
 
     List<ServiceDto> listServices();
 
-    ServiceDto createService(String email, ServiceDto serviceDto);
+    ServiceDto createService(ServiceDto serviceDto);
 
     ServiceDto updateService(int id, ServiceDto serviceDto);
 
     void deleteService(int id);
 
-    void deleteService(String email, int id);
 }

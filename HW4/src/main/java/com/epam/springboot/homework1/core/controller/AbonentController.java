@@ -3,19 +3,25 @@ package com.epam.springboot.homework1.core.controller;
 import com.epam.springboot.homework1.core.controller.dto.AbonentDto;
 import com.epam.springboot.homework1.core.controller.dto.ServiceDto;
 import com.epam.springboot.homework1.core.service.AbonentService;
-import com.epam.springboot.homework1.core.service.model.Abonent;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Api(tags = "API description for SWAGGER documentation")
+@ApiResponses({
+        @ApiResponse(code = 404, message = "Not found"),
+        @ApiResponse(code = 500, message = "Internal Server Error")
+})
 public class AbonentController {
     private final AbonentService abonentService;
 
@@ -33,16 +39,30 @@ public class AbonentController {
         return abonentService.getAbonent(email);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(value = "/abonent/{email}/service/{id}")
+    public ServiceDto subscribeAbonentToService(@PathVariable String email, @PathVariable int id){
+        log.info("subscribe abonent {} to service {}", email, id);
+        return abonentService.subscribeAbonent(email, id);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping(value = "/abonent/{email}/service/{id}")
+    public AbonentDto unsubscribeAbonent(@PathVariable String email, @PathVariable int id){
+        log.info("unsubscribe abonent {} from a service {}", email, id);
+        return abonentService.unsubscribeAbonent(email, id);
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/abonent")
-    public AbonentDto createAbonent(@RequestBody AbonentDto abonentDto){
+    public AbonentDto createAbonent(@Validated @RequestBody AbonentDto abonentDto){
         log.info("create abonent in abonent controller");
         return abonentService.createAbonent(abonentDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "/abonent/{email}")
-    public AbonentDto updateAbonent(@PathVariable String email, @RequestBody AbonentDto abonentDto){
+    public AbonentDto updateAbonent(@PathVariable String email, @Validated @RequestBody AbonentDto abonentDto){
         log.info("upate abonent {} in abonent controller", abonentDto.getEmail());
         return abonentService.updateAbonent(email, abonentDto);
     }

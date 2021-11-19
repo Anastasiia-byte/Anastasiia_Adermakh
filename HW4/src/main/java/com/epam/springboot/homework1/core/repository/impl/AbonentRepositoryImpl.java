@@ -1,8 +1,9 @@
-package com.epam.springboot.homework1.core.service.repository.impl;
+package com.epam.springboot.homework1.core.repository.impl;
 
-import com.epam.springboot.homework1.core.service.model.Abonent;
-import com.epam.springboot.homework1.core.service.model.Service;
-import com.epam.springboot.homework1.core.service.repository.AbonentRepository;
+import com.epam.springboot.homework1.core.exception.EntityNotFoundException;
+import com.epam.springboot.homework1.core.model.Abonent;
+import com.epam.springboot.homework1.core.model.Service;
+import com.epam.springboot.homework1.core.repository.AbonentRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,7 @@ public class AbonentRepositoryImpl implements AbonentRepository {
                 .stream()
                 .filter(a -> a.getEmail().equals(email))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new EntityNotFoundException("Abonent " + email + " was not found"));
     }
 
     @Override
@@ -45,7 +46,7 @@ public class AbonentRepositoryImpl implements AbonentRepository {
         if(isDeleted){
             list.add(abonent);
         } else {
-            throw new RuntimeException("Abonent was not found!");
+            throw new EntityNotFoundException("Abonent" + email + "was not found!");
         }
         return abonent;
     }
@@ -63,11 +64,25 @@ public class AbonentRepositoryImpl implements AbonentRepository {
                 .stream()
                 .filter(a -> a.getEmail().equals(email))
                 .findFirst()
-                .orElseThrow(RuntimeException::new)
+                .orElseThrow(() -> new EntityNotFoundException("Abonent " + email + " was not found"))
                 .getServiceList();
     }
 
     public List<Abonent> getAbonentList() {
         return list;
+    }
+
+    @Override
+    public Abonent deleteService(String email, int id) {
+        log.info("unsubscribe abonent {} from service {}", email, id);
+        Abonent abonent = list
+                .stream()
+                .filter(a -> a.getEmail().equals(email))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Abonent " + email + " was not found"));
+        abonent
+                .getServiceList()
+                .removeIf(s -> s.getId() == id);
+        return abonent;
     }
 }

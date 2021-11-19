@@ -2,9 +2,13 @@ package com.epam.springboot.homework1.core.controller;
 
 import com.epam.springboot.homework1.core.controller.dto.TariffDto;
 import com.epam.springboot.homework1.core.service.TariffService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +16,11 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Api(tags = "API description for SWAGGER documentation")
+@ApiResponses({
+        @ApiResponse(code = 404, message = "Not found"),
+        @ApiResponse(code = 500, message = "Internal Server Error")
+})
 public class TariffController {
     private final TariffService tariffService;
 
@@ -52,7 +61,7 @@ public class TariffController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "abonent/{email}/service/{id}/tariff")
-    public TariffDto createTariff(@PathVariable String email, @PathVariable int id, @RequestBody TariffDto tariffDto){
+    public TariffDto createTariff(@PathVariable String email, @PathVariable int id, @Validated @RequestBody TariffDto tariffDto){
         log.info("create new tariff with id {}", tariffDto.getId());
         return tariffService.createTariff(email, id, tariffDto);
     }
@@ -60,7 +69,7 @@ public class TariffController {
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "abonent/{email}/service/{id}/tariff/{tariffId}")
     public TariffDto updateTariff(@PathVariable String email, @PathVariable int id, @PathVariable int tariffId,
-                                  @RequestBody TariffDto tariffDto){
+                                  @Validated @RequestBody TariffDto tariffDto){
         log.info("update tariff with id {} in controller", tariffId);
         return tariffService.updateService(email, id, tariffId, tariffDto);
     }

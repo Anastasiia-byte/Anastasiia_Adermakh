@@ -1,8 +1,9 @@
-package com.epam.springboot.homework1.core.service.repository.impl;
+package com.epam.springboot.homework1.core.repository.impl;
 
-import com.epam.springboot.homework1.core.service.model.Tariff;
-import com.epam.springboot.homework1.core.service.repository.ServiceRepository;
-import com.epam.springboot.homework1.core.service.repository.TariffRepository;
+import com.epam.springboot.homework1.core.exception.EntityNotFoundException;
+import com.epam.springboot.homework1.core.model.Tariff;
+import com.epam.springboot.homework1.core.repository.ServiceRepository;
+import com.epam.springboot.homework1.core.repository.TariffRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,7 @@ public class TariffRepositoryImpl implements TariffRepository {
                 .stream()
                 .filter(t -> t.getId() == id)
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new EntityNotFoundException("Tariff " + id + " was not found"));
     }
 
     @Override
@@ -49,7 +50,7 @@ public class TariffRepositoryImpl implements TariffRepository {
         if(isDeleted){
             serviceRepository.getService(email, serviceId).getTariffList().add(tariff);
         } else {
-            throw new RuntimeException("Tariff was not found!");
+            throw new EntityNotFoundException("Tariff was not found!");
         }
         return tariff;
     }

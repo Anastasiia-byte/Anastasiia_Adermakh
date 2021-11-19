@@ -1,10 +1,16 @@
 package com.epam.springboot.homework1.core.controller;
 
 import com.epam.springboot.homework1.core.controller.dto.ServiceDto;
+import com.epam.springboot.homework1.core.mapper.ServiceMapper;
 import com.epam.springboot.homework1.core.service.ServiceService;
+import com.epam.springboot.homework1.core.model.Service;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,12 +18,17 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Api(tags = "API description for SWAGGER documentation")
+@ApiResponses({
+        @ApiResponse(code = 404, message = "Not found"),
+        @ApiResponse(code = 500, message = "Internal Server Error")
+})
 public class ServiceController {
     private final ServiceService serviceService;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/abonent/{email}/service")
-    public List<ServiceDto> getAllServices(@PathVariable String email){
+    public List<ServiceDto> getAbonentsServices(@PathVariable String email){
         log.info("list all abonent {}' s services in service controller", email);
         return serviceService.listServices(email);
     }
@@ -44,15 +55,16 @@ public class ServiceController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "/abonent/{email}/service")
-    public ServiceDto createService(@PathVariable String email, @RequestBody ServiceDto serviceDto){
+    @PostMapping(value = "/service")
+    public ServiceDto createService(@Validated @RequestBody ServiceDto serviceDto){
+        Service service = ServiceMapper.INSTANCE.mapServiceDto(serviceDto);
         log.info("create service with id {}", serviceDto.getId());
-        return serviceService.createService(email, serviceDto);
+        return serviceService.createService(serviceDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "/service/{id}")
-    public ServiceDto updateService(@PathVariable int id, @RequestBody ServiceDto serviceDto){
+    public ServiceDto updateService(@PathVariable int id, @Validated @RequestBody ServiceDto serviceDto){
         log.info("update service with id {} int service controller", serviceDto.getId());
         return serviceService.updateService(id, serviceDto);
     }
@@ -62,12 +74,5 @@ public class ServiceController {
     public void deleteService(@PathVariable int id){
         log.info("delete service with id {}", id);
         serviceService.deleteService(id);
-    }
-
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping(value = "/abonent/{email}/service/{id}")
-    public void deleteService(@PathVariable String email, @PathVariable int id){
-        log.info("delete service with id {} from abonent {}'s service list", id, email);
-        serviceService.deleteService(email, id);
     }
 }

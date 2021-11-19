@@ -4,3 +4,5 @@ Each service has a list of tariffs.
 Except from standard get/add/delete options, the opportunity of sorting tariffs is provided.
 
 Upload DEMO.postman_collection.json to PostMan to test the application.
+
+http://localhost:8080/swagger-ui.html#/

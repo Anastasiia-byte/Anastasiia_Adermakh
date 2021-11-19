@@ -1,17 +1,15 @@
-package com.epam.springboot.homework1.core.service.repository.impl;
+package com.epam.springboot.homework1.core.repository.impl;
 
-import com.epam.springboot.homework1.core.service.model.Abonent;
-import com.epam.springboot.homework1.core.service.model.Service;
-import com.epam.springboot.homework1.core.service.repository.AbonentRepository;
-import com.epam.springboot.homework1.core.service.repository.ServiceRepository;
+import com.epam.springboot.homework1.core.exception.EntityNotFoundException;
+import com.epam.springboot.homework1.core.model.Service;
+import com.epam.springboot.homework1.core.repository.AbonentRepository;
+import com.epam.springboot.homework1.core.repository.ServiceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -27,7 +25,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         return serviceList.stream()
                 .filter(s -> s.getId() == id)
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new EntityNotFoundException("Service " + id + " was not found"));
     }
 
     @Override
@@ -37,7 +35,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
                 .stream()
                 .filter(s -> s.getId() == id)
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new EntityNotFoundException("Service " + id + " was not found"));
     }
 
     @Override
@@ -52,10 +50,10 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     }
 
     @Override
-    public Service createService(String email, Service service) {
+    public Service createService(Service service) {
         log.info("add new service to service list in service repo");
-        abonentRepository.getServiceList(email).add(service);
         serviceList.add(service);
+
         return service;
     }
 
@@ -68,7 +66,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
             serviceList.add(service);
             abonentRepository.getAbonentList().forEach(a -> a.getServiceList().add(service));
         } else {
-            throw new RuntimeException("Service was not found");
+            throw new EntityNotFoundException("Service was not found");
         }
         return service;
     }
@@ -76,13 +74,8 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     @Override
     public void deleteService(int id) {
         log.info("delete service with id {} in service repo", id);
-        serviceList.removeIf(s -> s.getId() == id);
         abonentRepository.getAbonentList().forEach(a -> a.getServiceList().removeIf(s -> s.getId() == id));
+        serviceList.removeIf(s -> s.getId() == id);
     }
 
-    @Override
-    public void deleteService(String email, int id) {
-        log.info("delete service with id {} from abonent {}'s service list in service repo", email, id);
-        abonentRepository.getServiceList(email).removeIf(s -> s.getId() == id);
-    }
 }

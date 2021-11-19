@@ -16,4 +16,8 @@ public interface AbonentService {
 
     void deleteAbonent(String email);
 
+    ServiceDto subscribeAbonent(String email, int id);
+
+    AbonentDto unsubscribeAbonent(String email, int id);
+
 }

@@ -1,4 +1,4 @@
-package com.epam.springboot.homework1.core.service.model;
+package com.epam.springboot.homework1.core.model;
 
 import lombok.Builder;
 import lombok.Data;
@@ -9,5 +9,4 @@ public class Tariff {
     private int id;
     private String name;
     private int price;
-
 }

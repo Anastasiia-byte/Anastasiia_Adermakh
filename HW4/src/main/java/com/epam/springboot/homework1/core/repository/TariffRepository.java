@@ -1,6 +1,6 @@
-package com.epam.springboot.homework1.core.service.repository;
+package com.epam.springboot.homework1.core.repository;
 
-import com.epam.springboot.homework1.core.service.model.Tariff;
+import com.epam.springboot.homework1.core.model.Tariff;
 
 import java.util.List;
 

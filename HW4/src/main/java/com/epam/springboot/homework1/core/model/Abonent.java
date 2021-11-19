@@ -1,4 +1,4 @@
-package com.epam.springboot.homework1.core.service.model;
+package com.epam.springboot.homework1.core.model;
 
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +11,5 @@ public class Abonent {
     private String firstName;
     private String lastName;
     private String email;
-
-    private List<Service> serviceList;
+    public List<Service> serviceList;
 }

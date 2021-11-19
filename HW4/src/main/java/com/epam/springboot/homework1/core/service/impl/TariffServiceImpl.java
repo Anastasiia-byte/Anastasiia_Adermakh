@@ -1,15 +1,15 @@
 package com.epam.springboot.homework1.core.service.impl;
 
 import com.epam.springboot.homework1.core.controller.dto.TariffDto;
+import com.epam.springboot.homework1.core.mapper.TariffMapper;
 import com.epam.springboot.homework1.core.service.TariffService;
-import com.epam.springboot.homework1.core.service.model.Tariff;
-import com.epam.springboot.homework1.core.service.repository.TariffRepository;
+import com.epam.springboot.homework1.core.model.Tariff;
+import com.epam.springboot.homework1.core.repository.TariffRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -21,28 +21,28 @@ public class TariffServiceImpl implements TariffService {
     public TariffDto getTariff(String email, int serviceId, int id) {
         log.info("get tariff with id {} in tariff service", id);
         Tariff tariff = tariffRepository.getTariff(email, serviceId, id);
-        return mapTariffToTariffDto(tariff);
+        return TariffMapper.INSTANCE.mapTariff(tariff);
     }
 
     @Override
     public List<TariffDto> listTariffs(String email, int serviceId) {
         log.info("list all tariffs in tariff service");
         List<Tariff> tariffList = tariffRepository.listTariffs(email, serviceId);
-        return tariffList.stream().map(this::mapTariffToTariffDto).collect(Collectors.toList());
+        return TariffMapper.INSTANCE.mapTariffList(tariffList);
     }
 
     @Override
     public TariffDto createTariff(String email, int serviceId, TariffDto tariffDto) {
         log.info("create new tariff in tariff service");
-        Tariff tariff = tariffRepository.createTariff(email, serviceId, mapTariffDtoToTariff(tariffDto));
-        return mapTariffToTariffDto(tariff);
+        Tariff tariff = tariffRepository.createTariff(email, serviceId, TariffMapper.INSTANCE.mapTariffDto(tariffDto));
+        return TariffMapper.INSTANCE.mapTariff(tariff);
     }
 
     @Override
     public TariffDto updateService(String email, int serviceId, int id, TariffDto tariffDto) {
         log.info("update tariff with id {} in tariff service", id);
-        Tariff tariff = tariffRepository.updateService(email, serviceId, id, mapTariffDtoToTariff(tariffDto));
-        return mapTariffToTariffDto(tariff);
+        Tariff tariff = tariffRepository.updateService(email, serviceId, id, TariffMapper.INSTANCE.mapTariffDto(tariffDto));
+        return TariffMapper.INSTANCE.mapTariff(tariff);
     }
 
     @Override
@@ -55,38 +55,21 @@ public class TariffServiceImpl implements TariffService {
     public List<TariffDto> sortByPrice(String email, int serviceId) {
         log.info("sort tariffs by price in tariff service");
         List<Tariff> tariffList = tariffRepository.sortByPrice(email, serviceId);
-        return tariffList.stream().map(this::mapTariffToTariffDto).collect(Collectors.toList());
+        return TariffMapper.INSTANCE.mapTariffList(tariffList);
     }
 
     @Override
     public List<TariffDto> sortByNameStraight(String email, int serviceId) {
         log.info("sort tariffs by name alphabetically in tariff service");
         List<Tariff> tariffList = tariffRepository.sortByNameStraight(email, serviceId);
-        return tariffList.stream().map(this::mapTariffToTariffDto).collect(Collectors.toList());
+        return TariffMapper.INSTANCE.mapTariffList(tariffList);
     }
 
     @Override
     public List<TariffDto> sortByNameOpposite(String email, int serviceId) {
         log.info("sort tariffs by name non-alphabetically in tariff service");
         List<Tariff> tariffList = tariffRepository.sortByNameOpposite(email, serviceId);
-        return tariffList.stream().map(this::mapTariffToTariffDto).collect(Collectors.toList());
+        return TariffMapper.INSTANCE.mapTariffList(tariffList);
     }
 
-    //TODO: replace with BeanUtils or MapStruct
-    //for now
-    private TariffDto mapTariffToTariffDto(Tariff tariff){
-        return TariffDto.builder()
-                .id(tariff.getId())
-                .name(tariff.getName())
-                .price(tariff.getPrice())
-                .build();
-    }
-
-    private Tariff mapTariffDtoToTariff(TariffDto tariffDto){
-        return Tariff.builder()
-                .id(tariffDto.getId())
-                .name(tariffDto.getName())
-                .price(tariffDto.getPrice())
-                .build();
-    }
 }

@@ -1,6 +1,6 @@
-package com.epam.springboot.homework1.core.service.repository;
+package com.epam.springboot.homework1.core.repository;
 
-import com.epam.springboot.homework1.core.service.model.Service;
+import com.epam.springboot.homework1.core.model.Service;
 
 import java.util.List;
 
@@ -14,11 +14,10 @@ public interface ServiceRepository {
 
     List<Service> listServices();
 
-    Service createService(String email, Service service);
+    Service createService(Service service);
 
     Service updateService(int id, Service service);
 
     void deleteService(int id);
 
-    void deleteService(String email, int id);
 }
